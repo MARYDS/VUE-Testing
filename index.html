@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.8/vue.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/1.5.1/vue-resource.min.js"></script>
+    <link rel="stylesheet" href="./main.css" >
+</head>
+
+<body>
+
+    <div id="app">
+        <h1>{{attributes.action}}</h1>
+        <h3>{{attributes.background}}</h3>
+        <h3>Signatures: {{attributes.signature_count}}</h3>
+        <h3>Counts by constituency</h3>
+        <table>
+            <thead>
+                <th>No.</th>
+                <th>Constituency</th>
+                <th>MP</th>
+                <th>Signatures</th>
+            </thead>
+            <tr v-for = "(x, index) in attributes.signatures_by_constituency">
+                <td>{{ index + 1 }}</td>
+                <td>{{x.name}}</td>
+                <td>{{x.mp}}</td>
+                <td>{{x.signature_count}}</td>
+            </tr> 
+        </table>
+
+        <h3>Counts by country</h3>
+        <table>
+            <thead>
+                <th>No.</th>
+                <th>Country</th>
+                <th>code</th>
+                <th>Signatures</th>
+            </thead>
+            <tr v-for = "(x, index) in attributes.signatures_by_country">
+                <td>{{ index + 1 }}</td>
+                <td>{{x.name}}</td>
+                <td>{{x.code}}</td>
+                <td>{{x.signature_count}}</td>
+            </tr> 
+        </table>
+    </div>
+
+    <script>
+        var myObject = new Vue ({
+            el: '#app',
+            data: {action: '',
+                   attributes: {},
+                }
+        })
+
+        getData();
+        
+        function getData() {
+            return Vue.http.get('https://petition.parliament.uk/petitions/241584.json')
+            .then(response => {    
+                myObject.attributes = response.body.data.attributes
+                myObject.attributes.signatures_by_constituency.sort((a, b) => (b.signature_count > a.signature_count) ? 1 : -1)   
+                myObject.attributes.signatures_by_country.sort((a, b) => (b.signature_count > a.signature_count) ? 1 : -1)               
+            }, response => {
+            // error callback
+            })
+        };
+
+    </script>
+</body>
+
+</html>

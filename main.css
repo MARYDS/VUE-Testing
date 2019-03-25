@@ -1,0 +1,14 @@
+
+  table th {
+    text-align: left;
+    color: white;
+    background-color: black;
+  }
+
+  table tr:nth-child(even) {
+      background-color: gainsboro;
+  }
+
+  table tr:nth-child(odd) {
+    background-color: #fff;
+}
